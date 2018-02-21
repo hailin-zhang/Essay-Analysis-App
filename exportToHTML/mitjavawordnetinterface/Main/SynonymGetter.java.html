@@ -1,0 +1,92 @@
+<html>
+<head>
+<title>SynonymGetter.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+.s4 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+SynonymGetter.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">mitjavawordnetinterface.Main; 
+ 
+</span><span class="s0">import </span><span class="s1">edu.mit.jwi.Dictionary; 
+</span><span class="s0">import </span><span class="s1">edu.mit.jwi.IDictionary; 
+</span><span class="s0">import </span><span class="s1">edu.mit.jwi.item.*; 
+ 
+</span><span class="s0">import </span><span class="s1">java.io.File; 
+</span><span class="s0">import </span><span class="s1">java.io.IOException; 
+</span><span class="s0">import </span><span class="s1">java.net.URL; 
+</span><span class="s0">import </span><span class="s1">java.util.*; 
+ 
+</span><span class="s0">public class </span><span class="s1">SynonymGetter { 
+    </span><span class="s0">private </span><span class="s1">Map wordsToChange; 
+    </span><span class="s0">private </span><span class="s1">List synonyms; 
+ 
+    </span><span class="s2">//Constructor takes a key-value pair (Map) of the form word:count. Initializes synonym list to empty</span><span class="s1"> 
+    </span><span class="s0">public </span><span class="s1">SynonymGetter(Map wordsToChange) { 
+        </span><span class="s0">this</span><span class="s1">.wordsToChange = wordsToChange; 
+        synonyms = </span><span class="s0">new </span><span class="s1">ArrayList&lt;String&gt;(); 
+    } 
+ 
+    </span><span class="s2">//Accessor for list of synonyms</span><span class="s1"> 
+    </span><span class="s0">public </span><span class="s1">List getSynonyms() { 
+        </span><span class="s0">return </span><span class="s1">synonyms; 
+    } 
+ 
+    </span><span class="s2">//Accessor for map of words to change</span><span class="s1"> 
+    </span><span class="s0">public </span><span class="s1">Map getWordsToChange() { 
+        </span><span class="s0">return </span><span class="s1">wordsToChange; 
+    } 
+ 
+    </span><span class="s2">//Gets synonyms for each word in map; adds to synonyms in order of wordsToChange</span><span class="s1"> 
+    </span><span class="s0">public void </span><span class="s1">getWordSynonyms() { 
+        wordsToChange.forEach((k, v) -&gt; { 
+            </span><span class="s0">try </span><span class="s1">{ 
+                </span><span class="s2">//adds a set of synonyms to synonyms for each key-value pair</span><span class="s1"> 
+                synonyms.add(getSynonym((String) k)); 
+            } </span><span class="s0">catch </span><span class="s1">(IOException ignored) { 
+                </span><span class="s2">//Exception ignored (for now... ?)</span><span class="s1"> 
+            } 
+        }); 
+    } 
+ 
+    </span><span class="s2">//Helper to get the synonyms of a single word</span><span class="s1"> 
+    </span><span class="s0">private </span><span class="s1">Set getSynonym(String k) </span><span class="s0">throws </span><span class="s1">IOException { 
+        </span><span class="s2">//Initializes library/dictionary</span><span class="s1"> 
+        String wordNetDirectory = </span><span class="s3">&quot;C:</span><span class="s0">\\</span><span class="s3">Users</span><span class="s0">\\</span><span class="s3">Hailin</span><span class="s0">\\</span><span class="s3">IdeaProjects</span><span class="s0">\\</span><span class="s3">untitled</span><span class="s0">\\</span><span class="s3">src</span><span class="s0">\\</span><span class="s3">mitjavawordnetinterface</span><span class="s0">\\</span><span class="s3">Main</span><span class="s0">\\</span><span class="s3">WordNet-3.0&quot;</span><span class="s1">; 
+        String path = wordNetDirectory + File.separator + </span><span class="s3">&quot;dict&quot;</span><span class="s1">; 
+        URL url = </span><span class="s0">new </span><span class="s1">URL(</span><span class="s3">&quot;file&quot;</span><span class="s1">, </span><span class="s0">null</span><span class="s1">, path); 
+        IDictionary dict = </span><span class="s0">new </span><span class="s1">Dictionary(url); 
+        dict.open(); 
+ 
+        </span><span class="s2">//Gets synonyms fom dictionary</span><span class="s1"> 
+        Set&lt;String&gt; synonyms = </span><span class="s0">new </span><span class="s1">HashSet&lt;&gt;(); 
+        </span><span class="s2">//Could be a noun, verb, etc.; might let user decide in future versions</span><span class="s1"> 
+        </span><span class="s0">for </span><span class="s1">(POS p : POS.values()) { 
+            IIndexWord wordIndex = dict.getIndexWord((String) k, p); 
+            </span><span class="s0">if </span><span class="s1">(wordIndex != </span><span class="s0">null</span><span class="s1">) { 
+                IWordID wordID = wordIndex.getWordIDs().get(</span><span class="s4">0</span><span class="s1">); 
+                IWord word = dict.getWord(wordID); 
+                ISynset synset = word.getSynset(); 
+                </span><span class="s0">for </span><span class="s1">(IWord w : synset.getWords()) { 
+                    synonyms.add(w.getLemma()); 
+                } 
+            } 
+        } 
+        </span><span class="s0">return </span><span class="s1">synonyms; 
+    } 
+} 
+</span></pre>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<html>
+<head>
+<title>WordCounter.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+.s4 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+WordCounter.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">mitjavawordnetinterface.Main; 
+ 
+</span><span class="s0">import </span><span class="s1">java.util.LinkedHashMap; 
+</span><span class="s0">import </span><span class="s1">java.util.Map; 
+</span><span class="s0">import </span><span class="s1">java.util.Objects; 
+ 
+</span><span class="s0">public class </span><span class="s1">WordCounter { 
+    </span><span class="s0">private </span><span class="s1">String text; </span><span class="s2">//essay text as a string</span><span class="s1"> 
+    </span><span class="s0">private int </span><span class="s1">severityCount; </span><span class="s2">//proportion of total word count; determined by user</span><span class="s1"> 
+    </span><span class="s0">private </span><span class="s1">String[] splitText;</span><span class="s2">//array of words - to be used by parseText()</span><span class="s1"> 
+ 
+    </span><span class="s2">//Constructor takes essay as a String and a severity count; initializes splitText to NULL</span><span class="s1"> 
+    </span><span class="s0">public </span><span class="s1">WordCounter(String text, </span><span class="s0">int </span><span class="s1">count) { 
+        </span><span class="s0">this</span><span class="s1">.text = text; 
+        severityCount = count; 
+        splitText = </span><span class="s0">null</span><span class="s1">; 
+    } 
+ 
+    </span><span class="s2">//Accessor method for split text</span><span class="s1"> 
+    </span><span class="s0">public </span><span class="s1">String[] getSplitText() { 
+        </span><span class="s0">return </span><span class="s1">splitText; 
+    } 
+ 
+    </span><span class="s2">//Parses splitText and splits into array of words based on &quot;_&quot; (spaces)</span><span class="s1"> 
+    </span><span class="s0">public void </span><span class="s1">parseText() { 
+        String delims = </span><span class="s3">&quot;[ ]+&quot;</span><span class="s1">; 
+        splitText = text.split(delims); 
+    } 
+ 
+    </span><span class="s2">//Organizes splitText alphabetically</span><span class="s1"> 
+    </span><span class="s2">//NOTE: Uses insertion sort algorithm; problem size is small</span><span class="s1"> 
+    </span><span class="s0">public void </span><span class="s1">sortArray() { 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s4">1</span><span class="s1">; i &lt; splitText.length; i++) { 
+            String temp = splitText[i]; 
+            </span><span class="s0">int </span><span class="s1">pos = i; 
+            </span><span class="s2">// Shuffle up all sorted items &gt; splitText[i]</span><span class="s1"> 
+            </span><span class="s0">while </span><span class="s1">(pos &gt; </span><span class="s4">0 </span><span class="s1">&amp;&amp; splitText[pos - </span><span class="s4">1</span><span class="s1">].compareToIgnoreCase(temp) &gt; </span><span class="s4">0</span><span class="s1">) { 
+                splitText[pos] = splitText[pos - </span><span class="s4">1</span><span class="s1">]; 
+                pos--; 
+            } 
+            </span><span class="s2">// Insert the current item</span><span class="s1"> 
+            splitText[pos] = temp; 
+        } 
+    } 
+ 
+    </span><span class="s2">//REQUIRES: splitText is sorted in alphabetical order</span><span class="s1"> 
+    </span><span class="s2">//Returns key-value pair of words and their counts in splitText that appear severityCount+ number of times</span><span class="s1"> 
+    </span><span class="s0">public </span><span class="s1">Map getWords() { 
+        </span><span class="s2">//LinkedHashMap to preserve ordering: key is word, value is count</span><span class="s1"> 
+        Map&lt;String, Integer&gt; wordsToChange = </span><span class="s0">new </span><span class="s1">LinkedHashMap&lt;&gt;(); 
+        </span><span class="s0">int </span><span class="s1">count = </span><span class="s4">1</span><span class="s1">; 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s4">0</span><span class="s1">; i &lt; splitText.length - </span><span class="s4">1</span><span class="s1">; i++) { 
+            </span><span class="s0">if </span><span class="s1">(splitText[i].equals(splitText[i + </span><span class="s4">1</span><span class="s1">])) { 
+                count++; 
+                </span><span class="s0">if </span><span class="s1">(count &gt;= severityCount) { 
+                    </span><span class="s2">//if wordsToChange does not contain the current word</span><span class="s1"> 
+                    </span><span class="s0">if</span><span class="s1">(!wordsToChange.containsKey(splitText[i])){ 
+                        </span><span class="s2">//add to key-value pair</span><span class="s1"> 
+                        wordsToChange.put(splitText[i], count); 
+                    } 
+                    </span><span class="s0">else</span><span class="s1">{ 
+                        </span><span class="s2">//otherwise if count is bigger than count of the one in k-v pair, update</span><span class="s1"> 
+                        </span><span class="s0">if</span><span class="s1">(count &gt; wordsToChange.get(splitText[i]) ){ 
+                            wordsToChange.remove(splitText[i]); 
+                            wordsToChange.put(splitText[i], count); 
+                        } 
+                    } 
+                } 
+            } 
+            </span><span class="s0">else </span><span class="s1">{ 
+                count = </span><span class="s4">1</span><span class="s1">; 
+            } 
+        } 
+        </span><span class="s0">return </span><span class="s1">wordsToChange; 
+    } 
+ 
+    </span><span class="s2">//OVERRIDE: Equals; equal if strings values are the same</span><span class="s1"> 
+    </span><span class="s2">//NOTE: May not need to override equals, debug if needed</span><span class="s1"> 
+    @Override 
+    </span><span class="s0">public boolean </span><span class="s1">equals(Object o) { 
+        </span><span class="s0">if </span><span class="s1">(</span><span class="s0">this </span><span class="s1">== o) </span><span class="s0">return true</span><span class="s1">; 
+        </span><span class="s0">if </span><span class="s1">(o == </span><span class="s0">null </span><span class="s1">|| getClass() != o.getClass()) </span><span class="s0">return false</span><span class="s1">; 
+        WordCounter that = (WordCounter) o; 
+        </span><span class="s0">return </span><span class="s1">Objects.equals(text, that.text); 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public int </span><span class="s1">hashCode() { 
+        </span><span class="s0">return </span><span class="s1">Objects.hash(text); 
+    } 
+}</span></pre>
+</body>
+</html>
