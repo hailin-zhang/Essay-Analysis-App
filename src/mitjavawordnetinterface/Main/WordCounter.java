@@ -28,19 +28,48 @@ public class WordCounter {
     }
 
     //Organizes splitText alphabetically
-    //NOTE: Uses insertion sort algorithm; problem size is small
+    //NOTE: Uses quick sort algorithm
     public void sortArray() {
-        for (int i = 1; i < splitText.length; i++) {
-            String temp = splitText[i];
-            int pos = i;
-            // Shuffle up all sorted items > splitText[i]
-            while (pos > 0 && splitText[pos - 1].compareToIgnoreCase(temp) > 0) {
-                splitText[pos] = splitText[pos - 1];
-                pos--;
-            }
-            // Insert the current item
-            splitText[pos] = temp;
+        quickSort(splitText, 0, splitText.length - 1);
+
+//Old insertion sort implementation: keep for reference
+//        for (int i = 1; i < splitText.length; i++) {
+//            String temp = splitText[i];
+//            int pos = i;
+//            // Shuffle up all sorted items > splitText[i]
+//            while (pos > 0 && splitText[pos - 1].compareToIgnoreCase(temp) > 0) {
+//                splitText[pos] = splitText[pos - 1];
+//                pos--;
+//            }
+//            // Insert the current item
+//            splitText[pos] = temp;
+//        }
+    }
+
+    void quickSort(String[] splitText, int start, int end) {
+        if(start < end){
+            int partitionIndex = partition(splitText, start, end);
+            quickSort(splitText, start, partitionIndex - 1);
+            quickSort(splitText, partitionIndex + 1, end);
         }
+    }
+
+    int partition(String[] splitText, int start, int end) {
+        //Pivot arbitrarily picked as last item in array
+        String pivot = splitText[end];
+        int index = start;
+        for(int i = start; i < end; i++){
+            if(splitText[i].compareToIgnoreCase(pivot) < 0){
+                String temp = splitText[index];
+                splitText[index] = splitText[i];
+                splitText[i] = temp;
+                index++;
+            }
+        }
+        String endSwap = splitText[index];
+        splitText[index] = splitText[end]; //splitText[end] is pivot (for now..?)
+        splitText[end] = endSwap;
+        return index;
     }
 
     //REQUIRES: splitText is sorted in alphabetical order
