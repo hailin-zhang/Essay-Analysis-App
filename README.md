@@ -1,5 +1,5 @@
 # Essay-Analysis-App
-An app that analyzes an inputted essay and attempts to provide synonyms for words that have been used too often.
+An app that analyzes an inputted essay and provides synonyms for words that have been used too often.
 This application was developed by Hai Lin Zhang using the MIT JWI:
 
 Finlayson, M. A. (2014). Java Libraries for Accessing the Princeton Wordnet: Comparison and
